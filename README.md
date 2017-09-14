@@ -70,7 +70,7 @@ So that's the really high-level view of how forms work. Now we'll look at implem
 
 Let's look at our `ArticlePage.ss` template again and find the comment form near the bottom of the page. Let's try our best to replicate that form in our controller.
 
-_mysite/code/ArticlePage.php_
+_mysite/code/ArticlePageController.php_
 ```php
 //...
 use SilverStripe\Forms\Form;
@@ -207,7 +207,8 @@ namespace SilverStripe\Lessons;
 
 use SilverStripe\ORM\DataObject;
 
-class ArticleComment extends DataObject {
+class ArticleComment extends DataObject
+{
 
     private static $db = [
         'Name' => 'Varchar',
@@ -225,12 +226,13 @@ Notice we have a `$has_one` back to `ArticlePage` to set up a `$has_many` relati
 
 _mysite/code/ArticlePage.php_
 ```php
-class ArticlePage extends Page {
+class ArticlePage extends Page
+{
 
     //...
-    private static $has_many = array (
+    private static $has_many = [
         'Comments' => ArticleComment::class,
-    );
+    ];
     //...
 }
 ```
@@ -245,7 +247,7 @@ _themes/one-ring/templates/Layout/ArticlePage.ss_ (line 72)
     <ul>
         <% loop $Comments %>                        
         <li>
-            <img src="$ThemeDir/images/comment-man.jpg" alt="" />
+            <img src="themes/one-ring/images/comment-man.jpg" alt="" />
             <div class="comment">                                
                 <h3>$Name<small>$Created.Format('j F, Y')</small></h3>
                 <p>$Comment</p>
@@ -289,7 +291,7 @@ Notice that we create that `$has_many` relation by binding the comment back to t
 Let's try submitting the form and see what happens.
 
 ```
-    Action 'CommentForm' isn't allowed on class ArticlePageController.
+    Action 'CommentForm' isn't allowed on class SilverStripe\Lessons\ArticlePageController.
 ```
 
 Yikes!
@@ -358,9 +360,9 @@ _mysite/code/AritclePage.php_
 ```php
     public function handleComment($data, $form)
     {
-        $existing = $this->Comments()->filter(array(
+        $existing = $this->Comments()->filter([
             'Comment' => $data['Comment']
-        ));
+        ]);
         if($existing->exists() && strlen($data['Comment']) > 20) {
             $form->sessionMessage('That comment already exists! Spammer!','bad');
 
